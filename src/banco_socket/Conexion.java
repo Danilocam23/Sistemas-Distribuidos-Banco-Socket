@@ -34,7 +34,20 @@ public class Conexion {
             server = new ServerSocket(puerto);
             socket = new Socket();
             socket = server.accept();
+            
+            // se configura la entrada y se optine el canal de la conexion.
+            entrada = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String mensaje = entrada.readLine();
+            System.out.println(mensaje);
+            //retorno de la informacion
+            salida = new DataOutputStream(socket.getOutputStream());
+            salida.writeUTF("Adios Mundo");
+            
+            //cerrar la conexion
+            
+            socket.close();
         } catch (Exception e) {
+            
         }
     }
 
