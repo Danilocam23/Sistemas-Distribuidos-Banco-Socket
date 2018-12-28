@@ -16,6 +16,8 @@ public class Banco_Socket {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        Conexion c = new Conexion();
+        c.iniciar();
     }
     
 }
