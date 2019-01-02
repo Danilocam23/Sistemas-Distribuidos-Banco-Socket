@@ -12,6 +12,7 @@ package banco_socket;
 import java.net.*;
 import java.io.*;
 
+
 public class Conexion {
 
     //Instanciar Objetos
@@ -20,21 +21,21 @@ public class Conexion {
     //Variables Genericas
     //Puerto de la maquina que se va utilizar
     int puerto = 9000;
+    int maximoConexiones = 10; // Maximo de conexiones simultaneas
     //Enviar datos
     DataOutputStream salida;
     //Guardar la infromacion de entrada
     BufferedReader entrada;
+    
 
     public void iniciar() {
         try {
+           
+             server = new ServerSocket(puerto,maximoConexiones);
+            while (true) { 
             
-            /**
-             Reliza la apertura de la conexion segun el puerto especificado
-             */
-            server = new ServerSocket(puerto);
             socket = new Socket();
-            socket = server.accept();
-            
+             socket = server.accept();
             // se configura la entrada y se optine el canal de la conexion.
             entrada = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             String mensaje = entrada.readLine();
@@ -46,9 +47,21 @@ public class Conexion {
             //cerrar la conexion
             
             socket.close();
-        } catch (Exception e) {
+          }
             
+            
+        } catch (IOException  ex) {
+            
+        }finally{
+         try {
+                socket.close();
+                server.close();
+            } catch (IOException ex) {
+                
+            }
         }
     }
 
+    
+   
 }
