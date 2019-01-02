@@ -39,10 +39,13 @@ public class Conexion {
             // se configura la entrada y se optine el canal de la conexion.
             entrada = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             String mensaje = entrada.readLine();
+            Operaciones op = new Operaciones();
+            
+            
             System.out.println(mensaje);
             //retorno de la informacion
             salida = new DataOutputStream(socket.getOutputStream());
-            salida.writeUTF("Adios Mundo");
+            salida.writeUTF(op.CrecionObjeto(mensaje));
             
             //cerrar la conexion
             
