@@ -5,17 +5,20 @@
  */
 package Controladores;
 
+import Controladores.exceptions.IllegalOrphanException;
 import Controladores.exceptions.NonexistentEntityException;
-import Entidades.Usuarios;
 import java.io.Serializable;
+import javax.persistence.Query;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import Entidades.Cuenta;
+import Entidades.Usuarios;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
-import javax.persistence.EntityNotFoundException;
 import javax.persistence.Persistence;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 /**
  *
@@ -33,11 +36,29 @@ public class UsuariosJpaController implements Serializable {
     }
 
     public void create(Usuarios usuarios) {
+        if (usuarios.getCuentaList() == null) {
+            usuarios.setCuentaList(new ArrayList<Cuenta>());
+        }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            List<Cuenta> attachedCuentaList = new ArrayList<Cuenta>();
+            for (Cuenta cuentaListCuentaToAttach : usuarios.getCuentaList()) {
+                cuentaListCuentaToAttach = em.getReference(cuentaListCuentaToAttach.getClass(), cuentaListCuentaToAttach.getId());
+                attachedCuentaList.add(cuentaListCuentaToAttach);
+            }
+            usuarios.setCuentaList(attachedCuentaList);
             em.persist(usuarios);
+            for (Cuenta cuentaListCuenta : usuarios.getCuentaList()) {
+                Usuarios oldIDUsuarioOfCuentaListCuenta = cuentaListCuenta.getIDUsuario();
+                cuentaListCuenta.setIDUsuario(usuarios);
+                cuentaListCuenta = em.merge(cuentaListCuenta);
+                if (oldIDUsuarioOfCuentaListCuenta != null) {
+                    oldIDUsuarioOfCuentaListCuenta.getCuentaList().remove(cuentaListCuenta);
+                    oldIDUsuarioOfCuentaListCuenta = em.merge(oldIDUsuarioOfCuentaListCuenta);
+                }
+            }
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -46,12 +67,45 @@ public class UsuariosJpaController implements Serializable {
         }
     }
 
-    public void edit(Usuarios usuarios) throws NonexistentEntityException, Exception {
+    public void edit(Usuarios usuarios) throws IllegalOrphanException, NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            Usuarios persistentUsuarios = em.find(Usuarios.class, usuarios.getId());
+            List<Cuenta> cuentaListOld = persistentUsuarios.getCuentaList();
+            List<Cuenta> cuentaListNew = usuarios.getCuentaList();
+            List<String> illegalOrphanMessages = null;
+            for (Cuenta cuentaListOldCuenta : cuentaListOld) {
+                if (!cuentaListNew.contains(cuentaListOldCuenta)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain Cuenta " + cuentaListOldCuenta + " since its IDUsuario field is not nullable.");
+                }
+            }
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
+            }
+            List<Cuenta> attachedCuentaListNew = new ArrayList<Cuenta>();
+            for (Cuenta cuentaListNewCuentaToAttach : cuentaListNew) {
+                cuentaListNewCuentaToAttach = em.getReference(cuentaListNewCuentaToAttach.getClass(), cuentaListNewCuentaToAttach.getId());
+                attachedCuentaListNew.add(cuentaListNewCuentaToAttach);
+            }
+            cuentaListNew = attachedCuentaListNew;
+            usuarios.setCuentaList(cuentaListNew);
             usuarios = em.merge(usuarios);
+            for (Cuenta cuentaListNewCuenta : cuentaListNew) {
+                if (!cuentaListOld.contains(cuentaListNewCuenta)) {
+                    Usuarios oldIDUsuarioOfCuentaListNewCuenta = cuentaListNewCuenta.getIDUsuario();
+                    cuentaListNewCuenta.setIDUsuario(usuarios);
+                    cuentaListNewCuenta = em.merge(cuentaListNewCuenta);
+                    if (oldIDUsuarioOfCuentaListNewCuenta != null && !oldIDUsuarioOfCuentaListNewCuenta.equals(usuarios)) {
+                        oldIDUsuarioOfCuentaListNewCuenta.getCuentaList().remove(cuentaListNewCuenta);
+                        oldIDUsuarioOfCuentaListNewCuenta = em.merge(oldIDUsuarioOfCuentaListNewCuenta);
+                    }
+                }
+            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
@@ -69,7 +123,7 @@ public class UsuariosJpaController implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws NonexistentEntityException {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -80,6 +134,17 @@ public class UsuariosJpaController implements Serializable {
                 usuarios.getId();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The usuarios with id " + id + " no longer exists.", enfe);
+            }
+            List<String> illegalOrphanMessages = null;
+            List<Cuenta> cuentaListOrphanCheck = usuarios.getCuentaList();
+            for (Cuenta cuentaListOrphanCheckCuenta : cuentaListOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This Usuarios (" + usuarios + ") cannot be destroyed since the Cuenta " + cuentaListOrphanCheckCuenta + " in its cuentaList field has a non-nullable IDUsuario field.");
+            }
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
             }
             em.remove(usuarios);
             em.getTransaction().commit();

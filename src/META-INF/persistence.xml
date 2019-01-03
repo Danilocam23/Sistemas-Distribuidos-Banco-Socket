@@ -3,6 +3,8 @@
   <persistence-unit name="Banco_SocketPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>Entidades.Usuarios</class>
+    <class>Entidades.Dinero</class>
+    <class>Entidades.Cuenta</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/Banco"/>
       <property name="javax.persistence.jdbc.user" value="root"/>

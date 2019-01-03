@@ -6,34 +6,32 @@
 package Entidades;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author xcojcama
  */
 @Entity
-@Table(name = "usuarios")
+@Table(name = "dinero")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Usuarios.findAll", query = "SELECT u FROM Usuarios u")
-    , @NamedQuery(name = "Usuarios.findById", query = "SELECT u FROM Usuarios u WHERE u.id = :id")
-    , @NamedQuery(name = "Usuarios.findByNombres", query = "SELECT u FROM Usuarios u WHERE u.nombres = :nombres")
-    , @NamedQuery(name = "Usuarios.findByApellidos", query = "SELECT u FROM Usuarios u WHERE u.apellidos = :apellidos")})
-public class Usuarios implements Serializable {
+    @NamedQuery(name = "Dinero.findAll", query = "SELECT d FROM Dinero d")
+    , @NamedQuery(name = "Dinero.findById", query = "SELECT d FROM Dinero d WHERE d.id = :id")
+    , @NamedQuery(name = "Dinero.findByValorinicial", query = "SELECT d FROM Dinero d WHERE d.valorinicial = :valorinicial")
+    , @NamedQuery(name = "Dinero.findByValoractual", query = "SELECT d FROM Dinero d WHERE d.valoractual = :valoractual")})
+public class Dinero implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -42,23 +40,26 @@ public class Usuarios implements Serializable {
     @Column(name = "ID")
     private Integer id;
     @Basic(optional = false)
-    @Column(name = "Nombres")
-    private String nombres;
-    @Column(name = "Apellidos")
-    private String apellidos;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "iDUsuario")
-    private List<Cuenta> cuentaList;
+    @Column(name = "Valor_inicial")
+    private int valorinicial;
+    @Basic(optional = false)
+    @Column(name = "Valor_actual")
+    private int valoractual;
+    @JoinColumn(name = "ID_Cuenta", referencedColumnName = "ID")
+    @ManyToOne(optional = false)
+    private Cuenta iDCuenta;
 
-    public Usuarios() {
+    public Dinero() {
     }
 
-    public Usuarios(Integer id) {
+    public Dinero(Integer id) {
         this.id = id;
     }
 
-    public Usuarios(Integer id, String nombres) {
+    public Dinero(Integer id, int valorinicial, int valoractual) {
         this.id = id;
-        this.nombres = nombres;
+        this.valorinicial = valorinicial;
+        this.valoractual = valoractual;
     }
 
     public Integer getId() {
@@ -69,29 +70,28 @@ public class Usuarios implements Serializable {
         this.id = id;
     }
 
-    public String getNombres() {
-        return nombres;
+    public int getValorinicial() {
+        return valorinicial;
     }
 
-    public void setNombres(String nombres) {
-        this.nombres = nombres;
+    public void setValorinicial(int valorinicial) {
+        this.valorinicial = valorinicial;
     }
 
-    public String getApellidos() {
-        return apellidos;
+    public int getValoractual() {
+        return valoractual;
     }
 
-    public void setApellidos(String apellidos) {
-        this.apellidos = apellidos;
+    public void setValoractual(int valoractual) {
+        this.valoractual = valoractual;
     }
 
-    @XmlTransient
-    public List<Cuenta> getCuentaList() {
-        return cuentaList;
+    public Cuenta getIDCuenta() {
+        return iDCuenta;
     }
 
-    public void setCuentaList(List<Cuenta> cuentaList) {
-        this.cuentaList = cuentaList;
+    public void setIDCuenta(Cuenta iDCuenta) {
+        this.iDCuenta = iDCuenta;
     }
 
     @Override
@@ -104,10 +104,10 @@ public class Usuarios implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Usuarios)) {
+        if (!(object instanceof Dinero)) {
             return false;
         }
-        Usuarios other = (Usuarios) object;
+        Dinero other = (Dinero) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -116,7 +116,7 @@ public class Usuarios implements Serializable {
 
     @Override
     public String toString() {
-        return "Entidades.Usuarios[ id=" + id + " ]";
+        return "Entidades.Dinero[ id=" + id + " ]";
     }
     
 }
