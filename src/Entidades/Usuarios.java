@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Usuarios.findAll", query = "SELECT u FROM Usuarios u")
-    , @NamedQuery(name = "Usuarios.findById", query = "SELECT u FROM Usuarios u WHERE u.id = :id")
+    , @NamedQuery(name = "Usuarios.findByIDUsuarios", query = "SELECT u FROM Usuarios u WHERE u.iDUsuarios = :iDUsuarios")
     , @NamedQuery(name = "Usuarios.findByNombres", query = "SELECT u FROM Usuarios u WHERE u.nombres = :nombres")
     , @NamedQuery(name = "Usuarios.findByApellidos", query = "SELECT u FROM Usuarios u WHERE u.apellidos = :apellidos")})
 public class Usuarios implements Serializable {
@@ -39,34 +39,34 @@ public class Usuarios implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "ID")
-    private Integer id;
+    @Column(name = "ID_Usuarios")
+    private Integer iDUsuarios;
     @Basic(optional = false)
     @Column(name = "Nombres")
     private String nombres;
     @Column(name = "Apellidos")
     private String apellidos;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "iDUsuario")
-    private List<Cuenta> cuentaList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "iDUsuarios")
+    private List<Cuentas> cuentasList;
 
     public Usuarios() {
     }
 
-    public Usuarios(Integer id) {
-        this.id = id;
+    public Usuarios(Integer iDUsuarios) {
+        this.iDUsuarios = iDUsuarios;
     }
 
-    public Usuarios(Integer id, String nombres) {
-        this.id = id;
+    public Usuarios(Integer iDUsuarios, String nombres) {
+        this.iDUsuarios = iDUsuarios;
         this.nombres = nombres;
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getIDUsuarios() {
+        return iDUsuarios;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setIDUsuarios(Integer iDUsuarios) {
+        this.iDUsuarios = iDUsuarios;
     }
 
     public String getNombres() {
@@ -86,18 +86,18 @@ public class Usuarios implements Serializable {
     }
 
     @XmlTransient
-    public List<Cuenta> getCuentaList() {
-        return cuentaList;
+    public List<Cuentas> getCuentasList() {
+        return cuentasList;
     }
 
-    public void setCuentaList(List<Cuenta> cuentaList) {
-        this.cuentaList = cuentaList;
+    public void setCuentasList(List<Cuentas> cuentasList) {
+        this.cuentasList = cuentasList;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (iDUsuarios != null ? iDUsuarios.hashCode() : 0);
         return hash;
     }
 
@@ -108,7 +108,7 @@ public class Usuarios implements Serializable {
             return false;
         }
         Usuarios other = (Usuarios) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.iDUsuarios == null && other.iDUsuarios != null) || (this.iDUsuarios != null && !this.iDUsuarios.equals(other.iDUsuarios))) {
             return false;
         }
         return true;
@@ -116,7 +116,7 @@ public class Usuarios implements Serializable {
 
     @Override
     public String toString() {
-        return "Entidades.Usuarios[ id=" + id + " ]";
+        return "Entidades.Usuarios[ iDUsuarios=" + iDUsuarios + " ]";
     }
     
 }

@@ -28,52 +28,52 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author xcojcama
  */
 @Entity
-@Table(name = "cuenta")
+@Table(name = "cuentas")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Cuenta.findAll", query = "SELECT c FROM Cuenta c")
-    , @NamedQuery(name = "Cuenta.findById", query = "SELECT c FROM Cuenta c WHERE c.id = :id")
-    , @NamedQuery(name = "Cuenta.findByNumerocuenta", query = "SELECT c FROM Cuenta c WHERE c.numerocuenta = :numerocuenta")
-    , @NamedQuery(name = "Cuenta.findByFechacreacion", query = "SELECT c FROM Cuenta c WHERE c.fechacreacion = :fechacreacion")})
-public class Cuenta implements Serializable {
+    @NamedQuery(name = "Cuentas.findAll", query = "SELECT c FROM Cuentas c")
+    , @NamedQuery(name = "Cuentas.findByIDCuentas", query = "SELECT c FROM Cuentas c WHERE c.iDCuentas = :iDCuentas")
+    , @NamedQuery(name = "Cuentas.findByNumerocuenta", query = "SELECT c FROM Cuentas c WHERE c.numerocuenta = :numerocuenta")
+    , @NamedQuery(name = "Cuentas.findByFechacreacion", query = "SELECT c FROM Cuentas c WHERE c.fechacreacion = :fechacreacion")})
+public class Cuentas implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "ID")
-    private Integer id;
+    @Column(name = "ID_Cuentas")
+    private Integer iDCuentas;
     @Basic(optional = false)
     @Column(name = "Numero_cuenta")
     private String numerocuenta;
     @Basic(optional = false)
     @Column(name = "Fecha_creacion")
     private String fechacreacion;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "iDCuenta")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "iDCuentas")
     private List<Dinero> dineroList;
-    @JoinColumn(name = "ID_Usuario", referencedColumnName = "ID")
+    @JoinColumn(name = "ID_Usuarios", referencedColumnName = "ID_Usuarios")
     @ManyToOne(optional = false)
-    private Usuarios iDUsuario;
+    private Usuarios iDUsuarios;
 
-    public Cuenta() {
+    public Cuentas() {
     }
 
-    public Cuenta(Integer id) {
-        this.id = id;
+    public Cuentas(Integer iDCuentas) {
+        this.iDCuentas = iDCuentas;
     }
 
-    public Cuenta(Integer id, String numerocuenta, String fechacreacion) {
-        this.id = id;
+    public Cuentas(Integer iDCuentas, String numerocuenta, String fechacreacion) {
+        this.iDCuentas = iDCuentas;
         this.numerocuenta = numerocuenta;
         this.fechacreacion = fechacreacion;
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getIDCuentas() {
+        return iDCuentas;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setIDCuentas(Integer iDCuentas) {
+        this.iDCuentas = iDCuentas;
     }
 
     public String getNumerocuenta() {
@@ -101,29 +101,29 @@ public class Cuenta implements Serializable {
         this.dineroList = dineroList;
     }
 
-    public Usuarios getIDUsuario() {
-        return iDUsuario;
+    public Usuarios getIDUsuarios() {
+        return iDUsuarios;
     }
 
-    public void setIDUsuario(Usuarios iDUsuario) {
-        this.iDUsuario = iDUsuario;
+    public void setIDUsuarios(Usuarios iDUsuarios) {
+        this.iDUsuarios = iDUsuarios;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (iDCuentas != null ? iDCuentas.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Cuenta)) {
+        if (!(object instanceof Cuentas)) {
             return false;
         }
-        Cuenta other = (Cuenta) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        Cuentas other = (Cuentas) object;
+        if ((this.iDCuentas == null && other.iDCuentas != null) || (this.iDCuentas != null && !this.iDCuentas.equals(other.iDCuentas))) {
             return false;
         }
         return true;
@@ -131,7 +131,7 @@ public class Cuenta implements Serializable {
 
     @Override
     public String toString() {
-        return "Entidades.Cuenta[ id=" + id + " ]";
+        return "Entidades.Cuentas[ iDCuentas=" + iDCuentas + " ]";
     }
     
 }

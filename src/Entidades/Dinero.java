@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Dinero.findAll", query = "SELECT d FROM Dinero d")
-    , @NamedQuery(name = "Dinero.findById", query = "SELECT d FROM Dinero d WHERE d.id = :id")
+    , @NamedQuery(name = "Dinero.findByIDDinero", query = "SELECT d FROM Dinero d WHERE d.iDDinero = :iDDinero")
     , @NamedQuery(name = "Dinero.findByValorinicial", query = "SELECT d FROM Dinero d WHERE d.valorinicial = :valorinicial")
     , @NamedQuery(name = "Dinero.findByValoractual", query = "SELECT d FROM Dinero d WHERE d.valoractual = :valoractual")})
 public class Dinero implements Serializable {
@@ -37,37 +37,37 @@ public class Dinero implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "ID")
-    private Integer id;
+    @Column(name = "ID_Dinero")
+    private Integer iDDinero;
     @Basic(optional = false)
     @Column(name = "Valor_inicial")
     private int valorinicial;
     @Basic(optional = false)
     @Column(name = "Valor_actual")
     private int valoractual;
-    @JoinColumn(name = "ID_Cuenta", referencedColumnName = "ID")
+    @JoinColumn(name = "ID_Cuentas", referencedColumnName = "ID_Cuentas")
     @ManyToOne(optional = false)
-    private Cuenta iDCuenta;
+    private Cuentas iDCuentas;
 
     public Dinero() {
     }
 
-    public Dinero(Integer id) {
-        this.id = id;
+    public Dinero(Integer iDDinero) {
+        this.iDDinero = iDDinero;
     }
 
-    public Dinero(Integer id, int valorinicial, int valoractual) {
-        this.id = id;
+    public Dinero(Integer iDDinero, int valorinicial, int valoractual) {
+        this.iDDinero = iDDinero;
         this.valorinicial = valorinicial;
         this.valoractual = valoractual;
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getIDDinero() {
+        return iDDinero;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setIDDinero(Integer iDDinero) {
+        this.iDDinero = iDDinero;
     }
 
     public int getValorinicial() {
@@ -86,18 +86,18 @@ public class Dinero implements Serializable {
         this.valoractual = valoractual;
     }
 
-    public Cuenta getIDCuenta() {
-        return iDCuenta;
+    public Cuentas getIDCuentas() {
+        return iDCuentas;
     }
 
-    public void setIDCuenta(Cuenta iDCuenta) {
-        this.iDCuenta = iDCuenta;
+    public void setIDCuentas(Cuentas iDCuentas) {
+        this.iDCuentas = iDCuentas;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (iDDinero != null ? iDDinero.hashCode() : 0);
         return hash;
     }
 
@@ -108,7 +108,7 @@ public class Dinero implements Serializable {
             return false;
         }
         Dinero other = (Dinero) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.iDDinero == null && other.iDDinero != null) || (this.iDDinero != null && !this.iDDinero.equals(other.iDDinero))) {
             return false;
         }
         return true;
@@ -116,7 +116,7 @@ public class Dinero implements Serializable {
 
     @Override
     public String toString() {
-        return "Entidades.Dinero[ id=" + id + " ]";
+        return "Entidades.Dinero[ iDDinero=" + iDDinero + " ]";
     }
     
 }

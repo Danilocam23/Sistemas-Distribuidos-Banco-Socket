@@ -11,7 +11,7 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import Entidades.Cuenta;
+import Entidades.Cuentas;
 import Entidades.Dinero;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -38,15 +38,15 @@ public class DineroJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Cuenta IDCuenta = dinero.getIDCuenta();
-            if (IDCuenta != null) {
-                IDCuenta = em.getReference(IDCuenta.getClass(), IDCuenta.getId());
-                dinero.setIDCuenta(IDCuenta);
+            Cuentas IDCuentas = dinero.getIDCuentas();
+            if (IDCuentas != null) {
+                IDCuentas = em.getReference(IDCuentas.getClass(), IDCuentas.getIDCuentas());
+                dinero.setIDCuentas(IDCuentas);
             }
             em.persist(dinero);
-            if (IDCuenta != null) {
-                IDCuenta.getDineroList().add(dinero);
-                IDCuenta = em.merge(IDCuenta);
+            if (IDCuentas != null) {
+                IDCuentas.getDineroList().add(dinero);
+                IDCuentas = em.merge(IDCuentas);
             }
             em.getTransaction().commit();
         } finally {
@@ -61,27 +61,27 @@ public class DineroJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Dinero persistentDinero = em.find(Dinero.class, dinero.getId());
-            Cuenta IDCuentaOld = persistentDinero.getIDCuenta();
-            Cuenta IDCuentaNew = dinero.getIDCuenta();
-            if (IDCuentaNew != null) {
-                IDCuentaNew = em.getReference(IDCuentaNew.getClass(), IDCuentaNew.getId());
-                dinero.setIDCuenta(IDCuentaNew);
+            Dinero persistentDinero = em.find(Dinero.class, dinero.getIDDinero());
+            Cuentas IDCuentasOld = persistentDinero.getIDCuentas();
+            Cuentas IDCuentasNew = dinero.getIDCuentas();
+            if (IDCuentasNew != null) {
+                IDCuentasNew = em.getReference(IDCuentasNew.getClass(), IDCuentasNew.getIDCuentas());
+                dinero.setIDCuentas(IDCuentasNew);
             }
             dinero = em.merge(dinero);
-            if (IDCuentaOld != null && !IDCuentaOld.equals(IDCuentaNew)) {
-                IDCuentaOld.getDineroList().remove(dinero);
-                IDCuentaOld = em.merge(IDCuentaOld);
+            if (IDCuentasOld != null && !IDCuentasOld.equals(IDCuentasNew)) {
+                IDCuentasOld.getDineroList().remove(dinero);
+                IDCuentasOld = em.merge(IDCuentasOld);
             }
-            if (IDCuentaNew != null && !IDCuentaNew.equals(IDCuentaOld)) {
-                IDCuentaNew.getDineroList().add(dinero);
-                IDCuentaNew = em.merge(IDCuentaNew);
+            if (IDCuentasNew != null && !IDCuentasNew.equals(IDCuentasOld)) {
+                IDCuentasNew.getDineroList().add(dinero);
+                IDCuentasNew = em.merge(IDCuentasNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = dinero.getId();
+                Integer id = dinero.getIDDinero();
                 if (findDinero(id) == null) {
                     throw new NonexistentEntityException("The dinero with id " + id + " no longer exists.");
                 }
@@ -102,14 +102,14 @@ public class DineroJpaController implements Serializable {
             Dinero dinero;
             try {
                 dinero = em.getReference(Dinero.class, id);
-                dinero.getId();
+                dinero.getIDDinero();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The dinero with id " + id + " no longer exists.", enfe);
             }
-            Cuenta IDCuenta = dinero.getIDCuenta();
-            if (IDCuenta != null) {
-                IDCuenta.getDineroList().remove(dinero);
-                IDCuenta = em.merge(IDCuenta);
+            Cuentas IDCuentas = dinero.getIDCuentas();
+            if (IDCuentas != null) {
+                IDCuentas.getDineroList().remove(dinero);
+                IDCuentas = em.merge(IDCuentas);
             }
             em.remove(dinero);
             em.getTransaction().commit();
