@@ -20,6 +20,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 
 /**
  *
@@ -28,7 +29,7 @@ import javax.persistence.Persistence;
 public class CuentasJpaController implements Serializable {
 
     public CuentasJpaController() {
-         this.emf = Persistence.createEntityManagerFactory("Banco_SocketPU");
+        this.emf = Persistence.createEntityManagerFactory("Banco_SocketPU");
     }
     private EntityManagerFactory emf = null;
 
@@ -219,6 +220,34 @@ public class CuentasJpaController implements Serializable {
         }
     }
 
+    public boolean boolCuentas(String cuenta) {
+
+        EntityManager em = getEntityManager();
+        try {
+            Query query = em.createNamedQuery("Cuentas.count");
+            query.setParameter("numerocuenta", cuenta);
+            long count = (long) query.getSingleResult();
+            return ((count == 0) ? true : false);
+        } finally {
+            em.close();
+        }
+    }
+    
+     public int GetIdUsuarioCuentas(String cuenta) {
+
+        EntityManager em = getEntityManager();
+      
+            Query query = em.createNamedQuery("Cuentas.findByNumerocuenta");
+            query.setParameter("numerocuenta", cuenta);
+            Cuentas c = (Cuentas)query.getSingleResult();
+            
+            int idUsuario = Integer.parseInt(c.getIDUsuarios().getIDUsuarios().toString());
+            
+            
+            return idUsuario;
+       
+    }
+
     public int getCuentasCount() {
         EntityManager em = getEntityManager();
         try {
@@ -231,5 +260,5 @@ public class CuentasJpaController implements Serializable {
             em.close();
         }
     }
-    
+
 }
