@@ -32,6 +32,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Usuarios.findAll", query = "SELECT u FROM Usuarios u")
     , @NamedQuery(name = "Usuarios.findByIDUsuarios", query = "SELECT u FROM Usuarios u WHERE u.iDUsuarios = :iDUsuarios")
     , @NamedQuery(name = "Usuarios.findByNombres", query = "SELECT u FROM Usuarios u WHERE u.nombres = :nombres")
+    , @NamedQuery(name = "Usuarios.count", query = "SELECT COUNT(u) FROM Usuarios u WHERE  u.nombres = :nombres and u.apellidos = :apellidos")
+    , @NamedQuery(name = "Usuarios.usuario", query = "SELECT u FROM Usuarios u WHERE  u.nombres = :nombres and u.apellidos = :apellidos")
     , @NamedQuery(name = "Usuarios.findByApellidos", query = "SELECT u FROM Usuarios u WHERE u.apellidos = :apellidos")})
 public class Usuarios implements Serializable {
 
@@ -118,5 +120,5 @@ public class Usuarios implements Serializable {
     public String toString() {
         return "Entidades.Usuarios[ iDUsuarios=" + iDUsuarios + " ]";
     }
-    
+
 }

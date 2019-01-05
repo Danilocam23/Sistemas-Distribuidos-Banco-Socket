@@ -25,14 +25,38 @@ public class OperacionesDB {
         CuentasJpaController CCuenta = new CuentasJpaController();
         return CCuenta.boolCuentas(cuenta);
     }
-    
+
     public int GetIdUsuarioCuentas(String cuenta) {
         CuentasJpaController CCuenta = new CuentasJpaController();
         return CCuenta.GetIdUsuarioCuentas(cuenta);
     }
-    
-    
-    
+
+    public int VerificarUsuario(String nom, String ape) {
+        UsuariosJpaController CUsuarios = new UsuariosJpaController();
+        int id = 0;
+
+        if (CUsuarios.boolUsuario(nom, ape)) {
+            id = CrearUsuario(nom, ape);
+        } else {
+            id = BuscarUsuario(nom, ape);
+        }
+
+        return id;
+    }
+
+    public void CambiarUsuarioCuenta(int idUsuario,String numero) {
+
+        try {
+
+            CuentasJpaController CCuenta = new CuentasJpaController();
+            Cuentas c = CCuenta.GetCuenta(numero);
+            Usuarios u = new Usuarios();
+            u.setIDUsuarios(idUsuario);          
+            c.setIDUsuarios(u);
+            CCuenta.edit(c);
+        } catch (Exception e) {
+        }
+    }
 
     public int CrearUsuario(String nom, String Ape) {
         UsuariosJpaController CUsuarios = new UsuariosJpaController();
@@ -40,6 +64,11 @@ public class OperacionesDB {
         u.setNombres(nom);
         u.setApellidos(Ape);
         return CUsuarios.create(u);
+    }
+
+    public int BuscarUsuario(String nom, String Ape) {
+        UsuariosJpaController CUsuarios = new UsuariosJpaController();
+        return CUsuarios.GetIdUsuario(nom, Ape);
     }
 
     public int CrearCuenta(int idUsuario, String numerocuenta) {

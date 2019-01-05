@@ -35,7 +35,7 @@ public class Operaciones {
                         boolean existeCuneta = odb.ConsultarCuenta(numero);
 
                         if (existeCuneta) {
-                            int IdUsuario = odb.CrearUsuario(propNom, propApe);
+                            int IdUsuario = odb.VerificarUsuario(propNom, propApe);
                             int IdCuenta = odb.CrearCuenta(IdUsuario, numero);
                             odb.CrearDinero(IdCuenta, din);
                             
@@ -53,6 +53,12 @@ public class Operaciones {
                         propApe = arrayColores[4].toString().trim();
                         
                         int id = odb.GetIdUsuarioCuentas(numero);
+                        int IdUsuario = odb.VerificarUsuario(propNom, propApe);
+                      
+                        if(!(id == IdUsuario)){
+                            odb.CambiarUsuarioCuenta(IdUsuario, numero);
+                            
+                        }
                         
                         return numero + " " + propNom + " " + propApe;
                     default:

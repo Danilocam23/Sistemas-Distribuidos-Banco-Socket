@@ -27,7 +27,7 @@ import javax.persistence.Persistence;
 public class UsuariosJpaController implements Serializable {
 
     public UsuariosJpaController() {
-         this.emf = Persistence.createEntityManagerFactory("Banco_SocketPU");
+        this.emf = Persistence.createEntityManagerFactory("Banco_SocketPU");
     }
     private EntityManagerFactory emf = null;
 
@@ -202,5 +202,34 @@ public class UsuariosJpaController implements Serializable {
             em.close();
         }
     }
-    
+
+    public boolean boolUsuario(String nombre, String apellido) {
+
+        EntityManager em = getEntityManager();
+        try {
+            Query query = em.createNamedQuery("Usuarios.count");
+            query.setParameter("nombres", nombre);
+            query.setParameter("apellidos", apellido);
+            long count = (long) query.getSingleResult();
+            return ((count == 0) ? true : false);
+        } finally {
+            em.close();
+        }
+    }
+
+    public int GetIdUsuario(String nom, String ape) {
+
+        EntityManager em = getEntityManager();
+
+        Query query = em.createNamedQuery("Usuarios.usuario");
+        query.setParameter("nombres", nom);
+        query.setParameter("apellidos", ape);
+        Usuarios u = (Usuarios) query.getSingleResult();
+
+        int idUsuario = Integer.parseInt(u.getIDUsuarios().toString());
+
+        return idUsuario;
+
+    }
+
 }

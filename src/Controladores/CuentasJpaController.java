@@ -88,31 +88,14 @@ public class CuentasJpaController implements Serializable {
             Cuentas persistentCuentas = em.find(Cuentas.class, cuentas.getIDCuentas());
             Usuarios IDUsuariosOld = persistentCuentas.getIDUsuarios();
             Usuarios IDUsuariosNew = cuentas.getIDUsuarios();
-            List<Dinero> dineroListOld = persistentCuentas.getDineroList();
-            List<Dinero> dineroListNew = cuentas.getDineroList();
-            List<String> illegalOrphanMessages = null;
-            for (Dinero dineroListOldDinero : dineroListOld) {
-                if (!dineroListNew.contains(dineroListOldDinero)) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("You must retain Dinero " + dineroListOldDinero + " since its IDCuentas field is not nullable.");
-                }
-            }
-            if (illegalOrphanMessages != null) {
-                throw new IllegalOrphanException(illegalOrphanMessages);
-            }
+          
+            
             if (IDUsuariosNew != null) {
                 IDUsuariosNew = em.getReference(IDUsuariosNew.getClass(), IDUsuariosNew.getIDUsuarios());
                 cuentas.setIDUsuarios(IDUsuariosNew);
             }
-            List<Dinero> attachedDineroListNew = new ArrayList<Dinero>();
-            for (Dinero dineroListNewDineroToAttach : dineroListNew) {
-                dineroListNewDineroToAttach = em.getReference(dineroListNewDineroToAttach.getClass(), dineroListNewDineroToAttach.getIDDinero());
-                attachedDineroListNew.add(dineroListNewDineroToAttach);
-            }
-            dineroListNew = attachedDineroListNew;
-            cuentas.setDineroList(dineroListNew);
+          
+          
             cuentas = em.merge(cuentas);
             if (IDUsuariosOld != null && !IDUsuariosOld.equals(IDUsuariosNew)) {
                 IDUsuariosOld.getCuentasList().remove(cuentas);
@@ -122,17 +105,7 @@ public class CuentasJpaController implements Serializable {
                 IDUsuariosNew.getCuentasList().add(cuentas);
                 IDUsuariosNew = em.merge(IDUsuariosNew);
             }
-            for (Dinero dineroListNewDinero : dineroListNew) {
-                if (!dineroListOld.contains(dineroListNewDinero)) {
-                    Cuentas oldIDCuentasOfDineroListNewDinero = dineroListNewDinero.getIDCuentas();
-                    dineroListNewDinero.setIDCuentas(cuentas);
-                    dineroListNewDinero = em.merge(dineroListNewDinero);
-                    if (oldIDCuentasOfDineroListNewDinero != null && !oldIDCuentasOfDineroListNewDinero.equals(cuentas)) {
-                        oldIDCuentasOfDineroListNewDinero.getDineroList().remove(dineroListNewDinero);
-                        oldIDCuentasOfDineroListNewDinero = em.merge(oldIDCuentasOfDineroListNewDinero);
-                    }
-                }
-            }
+           
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
@@ -247,6 +220,16 @@ public class CuentasJpaController implements Serializable {
             return idUsuario;
        
     }
+     
+     public Cuentas GetCuenta(String cuenta) {
+
+        EntityManager em = getEntityManager();
+      
+            Query query = em.createNamedQuery("Cuentas.findByNumerocuenta");
+            query.setParameter("numerocuenta", cuenta);
+           return(Cuentas)query.getSingleResult();
+            
+    }
 
     public int getCuentasCount() {
         EntityManager em = getEntityManager();
@@ -261,4 +244,5 @@ public class CuentasJpaController implements Serializable {
         }
     }
 
+    
 }
