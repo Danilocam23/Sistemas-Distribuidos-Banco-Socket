@@ -165,5 +165,15 @@ public class DineroJpaController implements Serializable {
             em.close();
         }
     }
-    
+
+    public Dinero GetDinero(int idcuenta) {
+
+        EntityManager em = getEntityManager();
+
+        Query query = em.createNamedQuery("Dinero.findByDinero");
+        query.setParameter("idcuentas", idcuenta);
+        return (Dinero) query.getSingleResult();
+
+    }
+
 }

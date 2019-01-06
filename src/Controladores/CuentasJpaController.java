@@ -24,7 +24,7 @@ import javax.persistence.TypedQuery;
 
 /**
  *
- * @author xcojcama
+ * @author Danilo Camacho
  */
 public class CuentasJpaController implements Serializable {
 
@@ -212,13 +212,19 @@ public class CuentasJpaController implements Serializable {
       
             Query query = em.createNamedQuery("Cuentas.findByNumerocuenta");
             query.setParameter("numerocuenta", cuenta);
-            Cuentas c = (Cuentas)query.getSingleResult();
-            
+            Cuentas c = (Cuentas)query.getSingleResult();            
             int idUsuario = Integer.parseInt(c.getIDUsuarios().getIDUsuarios().toString());
-            
-            
             return idUsuario;
-       
+    }
+     public int IdCuentas(String cuenta) {
+
+        EntityManager em = getEntityManager();
+      
+            Query query = em.createNamedQuery("Cuentas.findByNumerocuenta");
+            query.setParameter("numerocuenta", cuenta);
+            Cuentas c = (Cuentas)query.getSingleResult();            
+            int idCuenta = c.getIDCuentas();
+            return idCuenta;
     }
      
      public Cuentas GetCuenta(String cuenta) {

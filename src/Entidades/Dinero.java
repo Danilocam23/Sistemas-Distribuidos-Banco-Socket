@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Dinero.findAll", query = "SELECT d FROM Dinero d")
     , @NamedQuery(name = "Dinero.findByIDDinero", query = "SELECT d FROM Dinero d WHERE d.iDDinero = :iDDinero")
     , @NamedQuery(name = "Dinero.findByValorinicial", query = "SELECT d FROM Dinero d WHERE d.valorinicial = :valorinicial")
+    , @NamedQuery(name = "Dinero.findByDinero", query = "SELECT d FROM Dinero d WHERE d.idcuentas = :idcuentas")
     , @NamedQuery(name = "Dinero.findByValoractual", query = "SELECT d FROM Dinero d WHERE d.valoractual = :valoractual")})
 public class Dinero implements Serializable {
 
@@ -118,5 +119,5 @@ public class Dinero implements Serializable {
     public String toString() {
         return "Entidades.Dinero[ iDDinero=" + iDDinero + " ]";
     }
-    
+
 }

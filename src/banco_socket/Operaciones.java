@@ -9,7 +9,7 @@ import banco_DB.OperacionesDB;
 
 /**
  *
- * @author xcojcama
+ * @author Danilo Camacho
  */
 public class Operaciones {
 
@@ -18,54 +18,66 @@ public class Operaciones {
         OperacionesDB odb = new OperacionesDB();
         String[] arrayColores = Datos.split(",");
 
-        switch (arrayColores[0].toString()) {
+        switch (arrayColores[0]) {
             case "1":
-                String numero = null;
-                String propNom = null;
-                String propApe = null;
-                String din = null;
-                String msg = null;
+                String numero;
+                String propNom;
+                String propApe;
+                String din;
+                String msg;
 
-                switch (arrayColores[1].toString()) {
+                switch (arrayColores[1]) {
                     case "crear":
-                        propNom = arrayColores[3].toString().trim();
-                        propApe = arrayColores[4].toString().trim();
-                        numero = arrayColores[2].toString().trim();
-                        din = arrayColores[5].toString().trim();
+                        propNom = arrayColores[3].trim();
+                        propApe = arrayColores[4].trim();
+                        numero = arrayColores[2].trim();
+                        din = arrayColores[5].trim();
                         boolean existeCuneta = odb.ConsultarCuenta(numero);
 
                         if (existeCuneta) {
                             int IdUsuario = odb.VerificarUsuario(propNom, propApe);
                             int IdCuenta = odb.CrearCuenta(IdUsuario, numero);
                             odb.CrearDinero(IdCuenta, din);
-                            
-                            msg="Creacion exitosa";
-                        }else{
-                            msg="cuenta ya creada";
+
+                            msg = "Creacion exitosa";
+                        } else {
+                            msg = "cuenta ya creada";
                         }
                         return msg;
                     case "borrar":
-                        numero = arrayColores[2].toString().trim();
+                        numero = arrayColores[2].trim();
                         return numero;
                     case "modificar":
-                        numero = arrayColores[2].toString().trim();
-                        propNom = arrayColores[3].toString().trim();
-                        propApe = arrayColores[4].toString().trim();
-                        
+                        numero = arrayColores[2].trim();
+                        propNom = arrayColores[3].trim();
+                        propApe = arrayColores[4].trim();
+
                         int id = odb.GetIdUsuarioCuentas(numero);
                         int IdUsuario = odb.VerificarUsuario(propNom, propApe);
-                      
-                        if(!(id == IdUsuario)){
+
+                        if (!(id == IdUsuario)) {
                             odb.CambiarUsuarioCuenta(IdUsuario, numero);
-                            
                         }
-                        
+
                         return numero + " " + propNom + " " + propApe;
                     default:
                         return "Error";
                 }
             case "2":
-                return "Danilo2";
+                String numeroc;
+                String dinero;
+                String msgs;
+
+                switch (arrayColores[1]) {
+                    case "consignacion":
+                        return "consignacion";
+                    case "retiro":
+                        return "retiro";
+                    default:
+                        return "Error";
+
+                }
+
             case "3":
                 return "Danilo3";
             default:

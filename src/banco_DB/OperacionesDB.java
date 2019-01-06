@@ -44,14 +44,14 @@ public class OperacionesDB {
         return id;
     }
 
-    public void CambiarUsuarioCuenta(int idUsuario,String numero) {
+    public void CambiarUsuarioCuenta(int idUsuario, String numero) {
 
         try {
 
             CuentasJpaController CCuenta = new CuentasJpaController();
             Cuentas c = CCuenta.GetCuenta(numero);
             Usuarios u = new Usuarios();
-            u.setIDUsuarios(idUsuario);          
+            u.setIDUsuarios(idUsuario);
             c.setIDUsuarios(u);
             CCuenta.edit(c);
         } catch (Exception e) {
@@ -98,5 +98,34 @@ public class OperacionesDB {
 
         CDinero.create(d);
 
+    }
+
+    public void Transacion(String cuenta, int type, int dinero) {
+
+        CuentasJpaController CCuenta = new CuentasJpaController();
+        DineroJpaController CDinero = new DineroJpaController();
+        int idCuneta = CCuenta.IdCuentas(cuenta);
+
+        try {
+
+            if (type == 1) {
+
+                Dinero din = CDinero.GetDinero(CCuenta.IdCuentas(cuenta));
+                int valor = din.getValoractual();
+
+                din.setValoractual(valor + dinero);
+
+                CDinero.edit(din);
+
+            } else {
+                Dinero din = CDinero.GetDinero(CCuenta.IdCuentas(cuenta));
+                int valor = din.getValoractual();
+
+                din.setValoractual(valor - dinero);
+
+                CDinero.edit(din);
+            }
+        } catch (Exception e) {
+        }
     }
 }
