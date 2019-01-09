@@ -102,8 +102,8 @@ public class OperacionesDB {
 
     }
 
-    public void Transacion(String cuenta, int type, int dinero) {
-
+    public String Transacion(String cuenta, int type, int dinero) {
+        String msg = null;
         CuentasJpaController CCuenta = new CuentasJpaController();
         DinerosJpaController CDinero = new DinerosJpaController();
         int idCuneta = CCuenta.IdCuentas(cuenta);
@@ -124,13 +124,22 @@ public class OperacionesDB {
                 int valor = din.getValoractual();
                 din.setValoractual(valor + dinero);
                 CDinero.edit(din);
+                msg = "Se realizo la consignacion a su cuenta";
             } else {
 
                 int valor = din.getValoractual();
+                
+                if(valor < dinero){
+                    msg = "No tiene saldo suficiente";
+                }else{
                 din.setValoractual(valor - dinero);
                 CDinero.edit(din);
+                msg = "Se realizo la debito a su cuenta";
+                }
+                
             }
         } catch (Exception e) {
         }
+        return msg;
     }
 }

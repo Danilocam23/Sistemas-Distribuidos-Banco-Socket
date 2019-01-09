@@ -38,10 +38,9 @@ public class Operaciones {
                             int IdUsuario = odb.VerificarUsuario(propNom, propApe);
                             int IdCuenta = odb.CrearCuenta(IdUsuario, numero);
                             odb.CrearDinero(IdCuenta, din);
-
-                            msg = "Creacion exitosa";
+                            msg = "Creacion de su cuenta fue exitosa";
                         } else {
-                            msg = "cuenta ya creada";
+                            msg = "Su cuenta ya esta creada en el sistema";
                         }
                         return msg;
                     case "borrar":
@@ -57,9 +56,11 @@ public class Operaciones {
 
                         if (!(id == IdUsuario)) {
                             odb.CambiarUsuarioCuenta(IdUsuario, numero);
+                            msg = "El usuario de su cuenta fue modificado";
+                        }else{
+                             msg = "El usuario de su cuenta no fue modificado";
                         }
-
-                        return numero + " " + propNom + " " + propApe;
+                        return msg;
                     default:
                         return "Error";
                 }
@@ -70,14 +71,14 @@ public class Operaciones {
                 switch (arrayColores[1]) {
                     case "consignacion":
                         numeroc = arrayColores[2];
-                        dinero = arrayColores[3];
-                        odb.Transacion(numeroc, 1, Integer.parseInt(dinero));
-                        return "consignacion";
+                        dinero = arrayColores[3];                        
+                        msgs=odb.Transacion(numeroc, 1, Integer.parseInt(dinero));
+                        return msgs;
                     case "retiro":
                         numeroc = arrayColores[2];
-                        dinero = arrayColores[3];
-                        odb.Transacion(numeroc, 2, Integer.parseInt(dinero));
-                        return "retiro";
+                        dinero = arrayColores[3];                        
+                        msgs=odb.Transacion(numeroc, 2, Integer.parseInt(dinero));
+                        return msgs;
                     default:
                         return "Error";
                 }
