@@ -67,15 +67,19 @@ public class Operaciones {
                 String numeroc;
                 String dinero;
                 String msgs;
-
                 switch (arrayColores[1]) {
                     case "consignacion":
+                        numeroc = arrayColores[2];
+                        dinero = arrayColores[3];
+                        odb.Transacion(numeroc, 1, Integer.parseInt(dinero));
                         return "consignacion";
                     case "retiro":
+                        numeroc = arrayColores[2];
+                        dinero = arrayColores[3];
+                        odb.Transacion(numeroc, 2, Integer.parseInt(dinero));
                         return "retiro";
                     default:
                         return "Error";
-
                 }
 
             case "3":

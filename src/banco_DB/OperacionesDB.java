@@ -6,14 +6,16 @@
 package banco_DB;
 
 import Controladores.CuentasJpaController;
-import Controladores.DineroJpaController;
+import Controladores.DinerosJpaController;
 import Controladores.UsuariosJpaController;
 import Entidades.Cuentas;
-import Entidades.Dinero;
+import Entidades.Dineros;
 import Entidades.Usuarios;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -86,8 +88,8 @@ public class OperacionesDB {
     }
 
     public void CrearDinero(int IdCuenta, String Dinero) {
-        DineroJpaController CDinero = new DineroJpaController();
-        Dinero d = new Dinero();
+        DinerosJpaController CDinero = new DinerosJpaController();
+        Dineros d = new Dineros();
         Cuentas c = new Cuentas();
 
         c.setIDCuentas(IdCuenta);
@@ -103,26 +105,29 @@ public class OperacionesDB {
     public void Transacion(String cuenta, int type, int dinero) {
 
         CuentasJpaController CCuenta = new CuentasJpaController();
-        DineroJpaController CDinero = new DineroJpaController();
+        DinerosJpaController CDinero = new DinerosJpaController();
         int idCuneta = CCuenta.IdCuentas(cuenta);
 
         try {
 
+            Dineros din = null;
+            List<Dineros> dins = CDinero.GetIdDinero(idCuneta);
+
+            for (Dineros str : dins) {
+
+                if (Objects.equals(str.getIDCuentas().getIDCuentas(), idCuneta)) {
+                    din = str;
+                }
+            }
+
             if (type == 1) {
-
-                Dinero din = CDinero.GetDinero(CCuenta.IdCuentas(cuenta));
                 int valor = din.getValoractual();
-
                 din.setValoractual(valor + dinero);
-
                 CDinero.edit(din);
-
             } else {
-                Dinero din = CDinero.GetDinero(CCuenta.IdCuentas(cuenta));
+
                 int valor = din.getValoractual();
-
                 din.setValoractual(valor - dinero);
-
                 CDinero.edit(din);
             }
         } catch (Exception e) {

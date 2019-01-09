@@ -12,9 +12,10 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import Entidades.Cuentas;
-import Entidades.Dinero;
+import Entidades.Dineros;
 import java.util.List;
 import javax.persistence.EntityManager;
+
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
@@ -22,9 +23,9 @@ import javax.persistence.Persistence;
  *
  * @author xcojcama
  */
-public class DineroJpaController implements Serializable {
+public class DinerosJpaController implements Serializable {
 
-    public DineroJpaController() {
+    public DinerosJpaController() {
         this.emf = Persistence.createEntityManagerFactory("Banco_SocketPU");
     }
     private EntityManagerFactory emf = null;
@@ -33,19 +34,19 @@ public class DineroJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Dinero dinero) {
+    public void create(Dineros dineros) {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Cuentas IDCuentas = dinero.getIDCuentas();
+            Cuentas IDCuentas = dineros.getIDCuentas();
             if (IDCuentas != null) {
                 IDCuentas = em.getReference(IDCuentas.getClass(), IDCuentas.getIDCuentas());
-                dinero.setIDCuentas(IDCuentas);
+                dineros.setIDCuentas(IDCuentas);
             }
-            em.persist(dinero);
+            em.persist(dineros);
             if (IDCuentas != null) {
-                IDCuentas.getDineroList().add(dinero);
+                IDCuentas.getDinerosList().add(dineros);
                 IDCuentas = em.merge(IDCuentas);
             }
             em.getTransaction().commit();
@@ -56,34 +57,34 @@ public class DineroJpaController implements Serializable {
         }
     }
 
-    public void edit(Dinero dinero) throws NonexistentEntityException, Exception {
+    public void edit(Dineros dineros) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Dinero persistentDinero = em.find(Dinero.class, dinero.getIDDinero());
-            Cuentas IDCuentasOld = persistentDinero.getIDCuentas();
-            Cuentas IDCuentasNew = dinero.getIDCuentas();
+            Dineros persistentDineros = em.find(Dineros.class, dineros.getIDDinero());
+            Cuentas IDCuentasOld = persistentDineros.getIDCuentas();
+            Cuentas IDCuentasNew = dineros.getIDCuentas();
             if (IDCuentasNew != null) {
                 IDCuentasNew = em.getReference(IDCuentasNew.getClass(), IDCuentasNew.getIDCuentas());
-                dinero.setIDCuentas(IDCuentasNew);
+                dineros.setIDCuentas(IDCuentasNew);
             }
-            dinero = em.merge(dinero);
+            dineros = em.merge(dineros);
             if (IDCuentasOld != null && !IDCuentasOld.equals(IDCuentasNew)) {
-                IDCuentasOld.getDineroList().remove(dinero);
+                IDCuentasOld.getDinerosList().remove(dineros);
                 IDCuentasOld = em.merge(IDCuentasOld);
             }
             if (IDCuentasNew != null && !IDCuentasNew.equals(IDCuentasOld)) {
-                IDCuentasNew.getDineroList().add(dinero);
+                IDCuentasNew.getDinerosList().add(dineros);
                 IDCuentasNew = em.merge(IDCuentasNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = dinero.getIDDinero();
-                if (findDinero(id) == null) {
-                    throw new NonexistentEntityException("The dinero with id " + id + " no longer exists.");
+                Integer id = dineros.getIDDinero();
+                if (findDineros(id) == null) {
+                    throw new NonexistentEntityException("The dineros with id " + id + " no longer exists.");
                 }
             }
             throw ex;
@@ -99,19 +100,19 @@ public class DineroJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Dinero dinero;
+            Dineros dineros;
             try {
-                dinero = em.getReference(Dinero.class, id);
-                dinero.getIDDinero();
+                dineros = em.getReference(Dineros.class, id);
+                dineros.getIDDinero();
             } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The dinero with id " + id + " no longer exists.", enfe);
+                throw new NonexistentEntityException("The dineros with id " + id + " no longer exists.", enfe);
             }
-            Cuentas IDCuentas = dinero.getIDCuentas();
+            Cuentas IDCuentas = dineros.getIDCuentas();
             if (IDCuentas != null) {
-                IDCuentas.getDineroList().remove(dinero);
+                IDCuentas.getDinerosList().remove(dineros);
                 IDCuentas = em.merge(IDCuentas);
             }
-            em.remove(dinero);
+            em.remove(dineros);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -120,19 +121,19 @@ public class DineroJpaController implements Serializable {
         }
     }
 
-    public List<Dinero> findDineroEntities() {
-        return findDineroEntities(true, -1, -1);
+    public List<Dineros> findDinerosEntities() {
+        return findDinerosEntities(true, -1, -1);
     }
 
-    public List<Dinero> findDineroEntities(int maxResults, int firstResult) {
-        return findDineroEntities(false, maxResults, firstResult);
+    public List<Dineros> findDinerosEntities(int maxResults, int firstResult) {
+        return findDinerosEntities(false, maxResults, firstResult);
     }
 
-    private List<Dinero> findDineroEntities(boolean all, int maxResults, int firstResult) {
+    private List<Dineros> findDinerosEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(Dinero.class));
+            cq.select(cq.from(Dineros.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -144,20 +145,20 @@ public class DineroJpaController implements Serializable {
         }
     }
 
-    public Dinero findDinero(Integer id) {
+    public Dineros findDineros(Integer id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(Dinero.class, id);
+            return em.find(Dineros.class, id);
         } finally {
             em.close();
         }
     }
 
-    public int getDineroCount() {
+    public int getDinerosCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<Dinero> rt = cq.from(Dinero.class);
+            Root<Dineros> rt = cq.from(Dineros.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();
@@ -166,13 +167,12 @@ public class DineroJpaController implements Serializable {
         }
     }
 
-    public Dinero GetDinero(int idcuenta) {
+    public List<Dineros> GetIdDinero(int cuenta) {
 
         EntityManager em = getEntityManager();
-
-        Query query = em.createNamedQuery("Dinero.findByDinero");
-        query.setParameter("idcuentas", idcuenta);
-        return (Dinero) query.getSingleResult();
+        Query query = em.createNamedQuery("Dineros.findAll");
+        List<Dineros> c = query.getResultList();
+        return c;
 
     }
 

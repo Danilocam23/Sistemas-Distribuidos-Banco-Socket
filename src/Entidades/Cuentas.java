@@ -38,6 +38,9 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Cuentas.findByFechacreacion", query = "SELECT c FROM Cuentas c WHERE c.fechacreacion = :fechacreacion")})
 public class Cuentas implements Serializable {
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "iDCuentas")
+    private List<Dineros> dinerosList;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,7 +54,7 @@ public class Cuentas implements Serializable {
     @Column(name = "Fecha_creacion")
     private String fechacreacion;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "iDCuentas")
-    private List<Dinero> dineroList;
+    private List<Dineros> dineroList;
     @JoinColumn(name = "ID_Usuarios", referencedColumnName = "ID_Usuarios")
     @ManyToOne(optional = false)
     private Usuarios iDUsuarios;
@@ -94,11 +97,11 @@ public class Cuentas implements Serializable {
     }
 
     @XmlTransient
-    public List<Dinero> getDineroList() {
+    public List<Dineros> getDineroList() {
         return dineroList;
     }
 
-    public void setDineroList(List<Dinero> dineroList) {
+    public void setDineroList(List<Dineros> dineroList) {
         this.dineroList = dineroList;
     }
 
@@ -133,6 +136,15 @@ public class Cuentas implements Serializable {
     @Override
     public String toString() {
         return "Entidades.Cuentas[ iDCuentas=" + iDCuentas + " ]";
+    }
+
+    @XmlTransient
+    public List<Dineros> getDinerosList() {
+        return dinerosList;
+    }
+
+    public void setDinerosList(List<Dineros> dinerosList) {
+        this.dinerosList = dinerosList;
     }
     
 }

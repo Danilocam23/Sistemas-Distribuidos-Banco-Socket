@@ -5,6 +5,7 @@
     <class>Entidades.Dinero</class>
     <class>Entidades.Usuarios</class>
     <class>Entidades.Cuentas</class>
+    <class>Entidades.Dineros</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/Banco"/>
       <property name="javax.persistence.jdbc.user" value="root"/>

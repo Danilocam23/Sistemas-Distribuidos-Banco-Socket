@@ -24,15 +24,14 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author xcojcama
  */
 @Entity
-@Table(name = "dinero")
+@Table(name = "dineros")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Dinero.findAll", query = "SELECT d FROM Dinero d")
-    , @NamedQuery(name = "Dinero.findByIDDinero", query = "SELECT d FROM Dinero d WHERE d.iDDinero = :iDDinero")
-    , @NamedQuery(name = "Dinero.findByValorinicial", query = "SELECT d FROM Dinero d WHERE d.valorinicial = :valorinicial")
-    , @NamedQuery(name = "Dinero.findByDinero", query = "SELECT d FROM Dinero d WHERE d.idcuentas = :idcuentas")
-    , @NamedQuery(name = "Dinero.findByValoractual", query = "SELECT d FROM Dinero d WHERE d.valoractual = :valoractual")})
-public class Dinero implements Serializable {
+    @NamedQuery(name = "Dineros.findAll", query = "SELECT d FROM Dineros d")
+    , @NamedQuery(name = "Dineros.findByIDDinero", query = "SELECT d FROM Dineros d WHERE d.iDDinero = :iDDinero")
+    , @NamedQuery(name = "Dineros.findByValorinicial", query = "SELECT d FROM Dineros d WHERE d.valorinicial = :valorinicial")
+    , @NamedQuery(name = "Dineros.findByValoractual", query = "SELECT d FROM Dineros d WHERE d.valoractual = :valoractual")})
+public class Dineros implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -50,17 +49,19 @@ public class Dinero implements Serializable {
     @ManyToOne(optional = false)
     private Cuentas iDCuentas;
 
-    public Dinero() {
+
+    public Dineros() {
     }
 
-    public Dinero(Integer iDDinero) {
+    public Dineros(Integer iDDinero) {
         this.iDDinero = iDDinero;
     }
 
-    public Dinero(Integer iDDinero, int valorinicial, int valoractual) {
+    public Dineros(Integer iDDinero, int valorinicial, int valoractual) {
         this.iDDinero = iDDinero;
         this.valorinicial = valorinicial;
         this.valoractual = valoractual;
+                
     }
 
     public Integer getIDDinero() {
@@ -93,6 +94,7 @@ public class Dinero implements Serializable {
 
     public void setIDCuentas(Cuentas iDCuentas) {
         this.iDCuentas = iDCuentas;
+
     }
 
     @Override
@@ -105,10 +107,10 @@ public class Dinero implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Dinero)) {
+        if (!(object instanceof Dineros)) {
             return false;
         }
-        Dinero other = (Dinero) object;
+        Dineros other = (Dineros) object;
         if ((this.iDDinero == null && other.iDDinero != null) || (this.iDDinero != null && !this.iDDinero.equals(other.iDDinero))) {
             return false;
         }
@@ -117,7 +119,7 @@ public class Dinero implements Serializable {
 
     @Override
     public String toString() {
-        return "Entidades.Dinero[ iDDinero=" + iDDinero + " ]";
+        return "Entidades.Dineros[ iDDinero=" + iDDinero + " ]";
     }
 
 }

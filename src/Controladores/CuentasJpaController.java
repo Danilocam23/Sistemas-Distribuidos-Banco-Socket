@@ -14,7 +14,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import Entidades.Usuarios;
-import Entidades.Dinero;
+import Entidades.Dineros;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -38,8 +38,8 @@ public class CuentasJpaController implements Serializable {
     }
 
     public int create(Cuentas cuentas) {
-        if (cuentas.getDineroList() == null) {
-            cuentas.setDineroList(new ArrayList<Dinero>());
+        if (cuentas.getDinerosList() == null) {
+            cuentas.setDinerosList(new ArrayList<Dineros>());
         }
         EntityManager em = null;
         try {
@@ -50,24 +50,24 @@ public class CuentasJpaController implements Serializable {
                 IDUsuarios = em.getReference(IDUsuarios.getClass(), IDUsuarios.getIDUsuarios());
                 cuentas.setIDUsuarios(IDUsuarios);
             }
-            List<Dinero> attachedDineroList = new ArrayList<Dinero>();
-            for (Dinero dineroListDineroToAttach : cuentas.getDineroList()) {
+            List<Dineros> attachedDineroList = new ArrayList<Dineros>();
+            for (Dineros dineroListDineroToAttach : cuentas.getDinerosList()) {
                 dineroListDineroToAttach = em.getReference(dineroListDineroToAttach.getClass(), dineroListDineroToAttach.getIDDinero());
                 attachedDineroList.add(dineroListDineroToAttach);
             }
-            cuentas.setDineroList(attachedDineroList);
+            cuentas.setDinerosList(attachedDineroList);
             em.persist(cuentas);
             em.flush();
             if (IDUsuarios != null) {
                 IDUsuarios.getCuentasList().add(cuentas);
                 IDUsuarios = em.merge(IDUsuarios);
             }
-            for (Dinero dineroListDinero : cuentas.getDineroList()) {
+            for (Dineros dineroListDinero : cuentas.getDinerosList()) {
                 Cuentas oldIDCuentasOfDineroListDinero = dineroListDinero.getIDCuentas();
                 dineroListDinero.setIDCuentas(cuentas);
                 dineroListDinero = em.merge(dineroListDinero);
                 if (oldIDCuentasOfDineroListDinero != null) {
-                    oldIDCuentasOfDineroListDinero.getDineroList().remove(dineroListDinero);
+                    oldIDCuentasOfDineroListDinero.getDinerosList().remove(dineroListDinero);
                     oldIDCuentasOfDineroListDinero = em.merge(oldIDCuentasOfDineroListDinero);
                 }
             }
@@ -88,14 +88,12 @@ public class CuentasJpaController implements Serializable {
             Cuentas persistentCuentas = em.find(Cuentas.class, cuentas.getIDCuentas());
             Usuarios IDUsuariosOld = persistentCuentas.getIDUsuarios();
             Usuarios IDUsuariosNew = cuentas.getIDUsuarios();
-          
-            
+
             if (IDUsuariosNew != null) {
                 IDUsuariosNew = em.getReference(IDUsuariosNew.getClass(), IDUsuariosNew.getIDUsuarios());
                 cuentas.setIDUsuarios(IDUsuariosNew);
             }
-          
-          
+
             cuentas = em.merge(cuentas);
             if (IDUsuariosOld != null && !IDUsuariosOld.equals(IDUsuariosNew)) {
                 IDUsuariosOld.getCuentasList().remove(cuentas);
@@ -105,7 +103,7 @@ public class CuentasJpaController implements Serializable {
                 IDUsuariosNew.getCuentasList().add(cuentas);
                 IDUsuariosNew = em.merge(IDUsuariosNew);
             }
-           
+
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
@@ -136,8 +134,8 @@ public class CuentasJpaController implements Serializable {
                 throw new NonexistentEntityException("The cuentas with id " + id + " no longer exists.", enfe);
             }
             List<String> illegalOrphanMessages = null;
-            List<Dinero> dineroListOrphanCheck = cuentas.getDineroList();
-            for (Dinero dineroListOrphanCheckDinero : dineroListOrphanCheck) {
+            List<Dineros> dineroListOrphanCheck = cuentas.getDinerosList();
+            for (Dineros dineroListOrphanCheckDinero : dineroListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
@@ -205,36 +203,37 @@ public class CuentasJpaController implements Serializable {
             em.close();
         }
     }
-    
-     public int GetIdUsuarioCuentas(String cuenta) {
+
+    public int GetIdUsuarioCuentas(String cuenta) {
 
         EntityManager em = getEntityManager();
-      
-            Query query = em.createNamedQuery("Cuentas.findByNumerocuenta");
-            query.setParameter("numerocuenta", cuenta);
-            Cuentas c = (Cuentas)query.getSingleResult();            
-            int idUsuario = Integer.parseInt(c.getIDUsuarios().getIDUsuarios().toString());
-            return idUsuario;
+
+        Query query = em.createNamedQuery("Cuentas.findByNumerocuenta");
+        query.setParameter("numerocuenta", cuenta);
+        Cuentas c = (Cuentas) query.getSingleResult();
+        int idUsuario = Integer.parseInt(c.getIDUsuarios().getIDUsuarios().toString());
+        return idUsuario;
     }
-     public int IdCuentas(String cuenta) {
+
+    public int IdCuentas(String cuenta) {
 
         EntityManager em = getEntityManager();
-      
-            Query query = em.createNamedQuery("Cuentas.findByNumerocuenta");
-            query.setParameter("numerocuenta", cuenta);
-            Cuentas c = (Cuentas)query.getSingleResult();            
-            int idCuenta = c.getIDCuentas();
-            return idCuenta;
+
+        Query query = em.createNamedQuery("Cuentas.findByNumerocuenta");
+        query.setParameter("numerocuenta", cuenta);
+        Cuentas c = (Cuentas) query.getSingleResult();
+        int idCuenta = c.getIDCuentas();
+        return idCuenta;
     }
-     
-     public Cuentas GetCuenta(String cuenta) {
+
+    public Cuentas GetCuenta(String cuenta) {
 
         EntityManager em = getEntityManager();
-      
-            Query query = em.createNamedQuery("Cuentas.findByNumerocuenta");
-            query.setParameter("numerocuenta", cuenta);
-           return(Cuentas)query.getSingleResult();
-            
+
+        Query query = em.createNamedQuery("Cuentas.findByNumerocuenta");
+        query.setParameter("numerocuenta", cuenta);
+        return (Cuentas) query.getSingleResult();
+
     }
 
     public int getCuentasCount() {
@@ -250,5 +249,4 @@ public class CuentasJpaController implements Serializable {
         }
     }
 
-    
 }
