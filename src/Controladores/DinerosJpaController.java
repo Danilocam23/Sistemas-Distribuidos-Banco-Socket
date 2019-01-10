@@ -167,7 +167,7 @@ public class DinerosJpaController implements Serializable {
         }
     }
 
-    public List<Dineros> GetIdDinero(int cuenta) {
+    public List<Dineros> GetIdDinero() {
 
         EntityManager em = getEntityManager();
         Query query = em.createNamedQuery("Dineros.findAll");

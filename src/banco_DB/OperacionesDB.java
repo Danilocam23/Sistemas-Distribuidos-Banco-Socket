@@ -111,7 +111,7 @@ public class OperacionesDB {
         try {
 
             Dineros din = null;
-            List<Dineros> dins = CDinero.GetIdDinero(idCuneta);
+            List<Dineros> dins= CDinero.GetIdDinero();
 
             for (Dineros str : dins) {
 
@@ -128,18 +128,71 @@ public class OperacionesDB {
             } else {
 
                 int valor = din.getValoractual();
-                
-                if(valor < dinero){
+
+                if (valor < dinero) {
                     msg = "No tiene saldo suficiente";
-                }else{
-                din.setValoractual(valor - dinero);
-                CDinero.edit(din);
-                msg = "Se realizo la debito a su cuenta";
+                } else {
+                    din.setValoractual(valor - dinero);
+                    CDinero.edit(din);
+                    msg = "Se realizo la debito a su cuenta";
                 }
-                
+
             }
         } catch (Exception e) {
         }
         return msg;
     }
+
+    public String Saldo(String cuenta) {
+        String msg = null;
+        CuentasJpaController CCuenta = new CuentasJpaController();
+        DinerosJpaController CDinero = new DinerosJpaController();
+        int idCuneta = CCuenta.IdCuentas(cuenta);
+         try {
+
+            Dineros din = null;
+            List<Dineros> dins = CDinero.GetIdDinero();
+
+            for (Dineros str : dins) {
+
+                if (Objects.equals(str.getIDCuentas().getIDCuentas(), idCuneta)) {
+                    din = str;
+                }
+            }
+
+            msg="Su Saldo es $"+ din.getValoractual();
+        } catch (Exception e) {
+        }
+        return msg;
+    }
+    
+    public String Borrar(String cuenta) {
+        
+         String mgs = null;
+        CuentasJpaController CCuenta = new CuentasJpaController();
+        DinerosJpaController CDinero = new DinerosJpaController();
+        UsuariosJpaController CUsuarios = new UsuariosJpaController();
+        int idCuneta = CCuenta.IdCuentas(cuenta);
+        Cuentas c = CCuenta.GetCuenta(cuenta);
+        try {
+
+             Dineros din = null;
+            List<Dineros> dins = CDinero.GetIdDinero();
+
+            for (Dineros str : dins) {
+
+                if (Objects.equals(str.getIDCuentas().getIDCuentas(), idCuneta)) {
+                    din = str;
+                }
+            }
+
+             CDinero.destroy(din.getIDDinero());
+            CCuenta.destroy(idCuneta);
+            CUsuarios.destroy(c.getIDUsuarios().getIDUsuarios());
+            mgs = "su Cuenta ha sido borrada";
+        } catch (Exception e) {
+        }
+        return mgs;
+    }
+
 }

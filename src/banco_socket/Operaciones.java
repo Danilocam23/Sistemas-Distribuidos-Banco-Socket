@@ -45,7 +45,9 @@ public class Operaciones {
                         return msg;
                     case "borrar":
                         numero = arrayColores[2].trim();
-                        return numero;
+                        
+                        
+                        return odb.Borrar(numero);
                     case "modificar":
                         numero = arrayColores[2].trim();
                         propNom = arrayColores[3].trim();
@@ -57,8 +59,8 @@ public class Operaciones {
                         if (!(id == IdUsuario)) {
                             odb.CambiarUsuarioCuenta(IdUsuario, numero);
                             msg = "El usuario de su cuenta fue modificado";
-                        }else{
-                             msg = "El usuario de su cuenta no fue modificado";
+                        } else {
+                            msg = "El usuario de su cuenta no fue modificado";
                         }
                         return msg;
                     default:
@@ -71,20 +73,23 @@ public class Operaciones {
                 switch (arrayColores[1]) {
                     case "consignacion":
                         numeroc = arrayColores[2];
-                        dinero = arrayColores[3];                        
-                        msgs=odb.Transacion(numeroc, 1, Integer.parseInt(dinero));
+                        dinero = arrayColores[3];
+                        msgs = odb.Transacion(numeroc, 1, Integer.parseInt(dinero));
                         return msgs;
                     case "retiro":
                         numeroc = arrayColores[2];
-                        dinero = arrayColores[3];                        
-                        msgs=odb.Transacion(numeroc, 2, Integer.parseInt(dinero));
+                        dinero = arrayColores[3];
+                        msgs = odb.Transacion(numeroc, 2, Integer.parseInt(dinero));
                         return msgs;
                     default:
                         return "Error";
                 }
 
             case "3":
-                return "Danilo3";
+                String mgs;
+                String numero_c = arrayColores[2];
+                mgs = odb.Saldo(numero_c);
+                return mgs;
             default:
                 return "Error";
         }
