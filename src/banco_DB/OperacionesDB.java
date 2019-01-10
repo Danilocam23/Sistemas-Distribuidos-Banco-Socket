@@ -111,7 +111,7 @@ public class OperacionesDB {
         try {
 
             Dineros din = null;
-            List<Dineros> dins= CDinero.GetIdDinero();
+            List<Dineros> dins = CDinero.GetIdDinero();
 
             for (Dineros str : dins) {
 
@@ -148,7 +148,7 @@ public class OperacionesDB {
         CuentasJpaController CCuenta = new CuentasJpaController();
         DinerosJpaController CDinero = new DinerosJpaController();
         int idCuneta = CCuenta.IdCuentas(cuenta);
-         try {
+        try {
 
             Dineros din = null;
             List<Dineros> dins = CDinero.GetIdDinero();
@@ -160,15 +160,15 @@ public class OperacionesDB {
                 }
             }
 
-            msg="Su Saldo es $"+ din.getValoractual();
+            msg = "Su Saldo es $" + din.getValoractual();
         } catch (Exception e) {
         }
         return msg;
     }
-    
+
     public String Borrar(String cuenta) {
-        
-         String mgs = null;
+
+        String mgs = null;
         CuentasJpaController CCuenta = new CuentasJpaController();
         DinerosJpaController CDinero = new DinerosJpaController();
         UsuariosJpaController CUsuarios = new UsuariosJpaController();
@@ -176,7 +176,7 @@ public class OperacionesDB {
         Cuentas c = CCuenta.GetCuenta(cuenta);
         try {
 
-             Dineros din = null;
+            Dineros din = null;
             List<Dineros> dins = CDinero.GetIdDinero();
 
             for (Dineros str : dins) {
@@ -186,10 +186,15 @@ public class OperacionesDB {
                 }
             }
 
-             CDinero.destroy(din.getIDDinero());
-            CCuenta.destroy(idCuneta);
-            CUsuarios.destroy(c.getIDUsuarios().getIDUsuarios());
-            mgs = "su Cuenta ha sido borrada";
+            if (din.getIDDinero() == 0) {
+                CDinero.destroy(din.getIDDinero());
+                CCuenta.destroy(idCuneta);
+                CUsuarios.destroy(c.getIDUsuarios().getIDUsuarios());
+                mgs = "su Cuenta ha sido borrada";
+            } else {
+                mgs = "su Cuenta tiene saldo, por favor retirelo antes de eliminar";
+            }
+
         } catch (Exception e) {
         }
         return mgs;
